@@ -1,135 +1,163 @@
 <!DOCTYPE html>
-<html lang="ku" dir="rtl">
+<html lang="kmr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ژماردەرا تەمەن و دەمی | Age Calculator</title>
-    <!-- Tailwind CSS بۆ ڕووکەشەکێ جوان -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- فۆنتێ Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Age & Time Calculator</title>
     <style>
-        body { font-family: 'Vazirmatn', sans-serif; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: #0f172a;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .card {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid #334155;
+        }
+        h1 {
+            color: #38bdf8;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .clock-box {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #facc15;
+            margin-bottom: 25px;
+            border: 1px solid #1e293b;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #94a3b8;
+            text-align: right;
+        }
+        input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background: #0284c7;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover {
+            background: #0369a1;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #0f172a;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #38bdf8;
+            line-height: 1.6;
+        }
+        .hidden { display: none; }
     </style>
 </head>
-<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center p-4">
+<body>
 
-    <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700">
-        <h1 class="text-2xl font-bold text-center mb-2 text-indigo-400">ژماردەرا تەمەن و دەمی</h1>
-        <p class="text-slate-400 text-center text-sm mb-6">ڕۆژا ژدایکبوونا خۆ دیار بکە دا تەمەنێ خۆ ب سال، هەيف، روژ، دەمژمێر و چرکە ببینی.</p>
+    <div class="card">
+        <h1>Age & Time Calculator</h1>
 
-        <!-- پشکا دەستپێکێ (Input) -->
-        <div class="mb-5">
-            <label class="block text-sm font-medium text-slate-300 mb-2">روژ و دەمێ ژدایکبوونێ:</label>
-            <input type="datetime-local" id="birthDate" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500">
+        <!-- Real-time Clock -->
+        <div class="clock-box" id="live-clock">
+            00:00:00 PM
         </div>
 
-        <button onclick="startCalculator()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg shadow-indigo-600/30">
-            تەمەمێ من دياربكه (ئۆتۆماتیکی)
-        </button>
-
-        <!-- پشکا ئەنجامی (Results) -->
-        <div id="result" class="mt-6 hidden space-y-2 bg-slate-900/50 p-4 rounded-xl border border-slate-700/50 text-center">
-            <div class="grid grid-cols-3 gap-2">
-                <div class="bg-slate-800 p-2 rounded-lg">
-                    <span id="years" class="text-lg font-bold text-indigo-400 block">0</span>
-                    <span class="text-xs text-slate-400">سال</span>
-                </div>
-                <div class="bg-slate-800 p-2 rounded-lg">
-                    <span id="months" class="text-lg font-bold text-indigo-400 block">0</span>
-                    <span class="text-xs text-slate-400">هەيف</span>
-                </div>
-                <div class="bg-slate-800 p-2 rounded-lg">
-                    <span id="days" class="text-lg font-bold text-indigo-400 block">0</span>
-                    <span class="text-xs text-slate-400">روژ</span>
-                </div>
-            </div>
-            <div class="grid grid-cols-3 gap-2 mt-2">
-                <div class="bg-slate-800 p-2 rounded-lg">
-                    <span id="hours" class="text-base font-bold text-indigo-400 block">0</span>
-                    <span class="text-xs text-slate-400">دەمژمێر</span>
-                </div>
-                <div class="bg-slate-800 p-2 rounded-lg">
-                    <span id="minutes" class="text-base font-bold text-indigo-400 block">0</span>
-                    <span class="text-xs text-slate-400">خولەک</span>
-                </div>
-                <div class="bg-slate-800 p-2 rounded-lg">
-                    <span id="seconds" class="text-base font-bold text-indigo-400 block">0</span>
-                    <span class="text-xs text-slate-400">چرکە</span>
-                </div>
-            </div>
+        <div>
+            <label for="birthdate">بەروارێ ژدایکبوونێ هەلبژێره:</label>
+            <input type="date" id="birthdate">
+            <button onclick="calculateAge()">ژمارپێکرنا تەمەنی</button>
         </div>
+
+        <div id="result" class="result hidden"></div>
     </div>
 
-    <!-- پشکا JavaScript بۆ لۆجیکێ ئۆتۆماتیکی -->
     <script>
-        let timer = null;
+        // Live Clock Function
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+            let ampm = hours >= 12 ? 'PM' : 'AM';
 
-        function startCalculator() {
-            const birthInput = document.getElementById('birthDate').value;
+            hours = hours % 12;
+            hours = hours ? hours : 12; // 0 should be 12
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+
+            const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
+            document.getElementById('live-clock').innerText = timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Age Calculation Function
+        function calculateAge() {
+            const birthInput = document.getElementById('birthdate').value;
             if (!birthInput) {
-                alert('هيڤي دكەم روژ و دەمێ ژدایکبوونا خۆ دیار بکە!');
+                alert("تکایە بەروارەکێ هەلبژێره!");
                 return;
             }
 
             const birthDate = new Date(birthInput);
+            const today = new Date();
 
-            // ئەگەر دەمێ مە بەری نوو هەبیت، پاک دکەین دا دوو جار لێک نەدەن
-            if (timer) clearInterval(timer);
+            let years = today.getFullYear() - birthDate.getFullYear();
+            let months = today.getMonth() - birthDate.getMonth();
+            let days = today.getDate() - birthDate.getDate();
 
-            function updateAge() {
-                const now = new Date();
-                let diff = now - birthDate;
-
-                if (diff < 0) {
-                    alert('روژا ژدایکبوونێ نابی پاش داهاتوویێ بیت!');
-                    clearInterval(timer);
-                    return;
-                }
-
-                // ژمارتنا سال، هەيف، روژ، دەمژمێر، خولەک و چرکە
-                let years = now.getFullYear() - birthDate.getFullYear();
-                let months = now.getMonth() - birthDate.getMonth();
-                let days = now.getDate() - birthDate.getDate();
-                let hours = now.getHours() - birthDate.getHours();
-                let minutes = now.getMinutes() - birthDate.getMinutes();
-                let seconds = now.getSeconds() - birthDate.getSeconds();
-
-                if (seconds < 0) {
-                    seconds += 60;
-                    minutes--;
-                }
-                if (minutes < 0) {
-                    minutes += 60;
-                    hours--;
-                }
-                if (hours < 0) {
-                    hours += 24;
-                    days--;
-                }
-                if (days < 0) {
-                    months--;
-                    const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-                    days += prevMonth.getDate();
-                }
-                if (months < 0) {
-                    years--;
-                    months += 12;
-                }
-
-                // نیشاندانا ئەنجامی ل سەر شاشەیێ
-                document.getElementById('years').innerText = years;
-                document.getElementById('months').innerText = months;
-                document.getElementById('days').innerText = days;
-                document.getElementById('hours').innerText = hours;
-                document.getElementById('minutes').innerText = minutes;
-                document.getElementById('seconds').innerText = seconds;
-                document.getElementById('result').classList.remove('hidden');
+            if (days < 0) {
+                months--;
+                const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                days += lastMonth.getDate();
             }
 
-            updateAge();
-            // نووکرنا ئۆتۆماتیکی هەمی 1 چرکە (1000 ms)
-            timer = setInterval(updateAge, 1000);
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.classList.remove('hidden');
+            resultDiv.innerHTML = `تەمەنێ تە ب دروستی:<br><b>${years}</b> سال و <b>${months}</b> هەیڤ و <b>${days}</b> ڕۆژە.`;
         }
     </script>
 </body>
