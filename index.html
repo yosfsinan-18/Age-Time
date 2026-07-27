@@ -1,3 +1,103 @@
+<!DOCTYPE html>
+<html lang="ku">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ژمارکرنا عەمری - تەمەنێ خۆ بزانە</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            direction: rtl;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 350px;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .select-group {
+            margin-bottom: 15px;
+            text-align: right;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #fff;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>تەمەنێ خۆ بزانسە</h2>
+    
+    <div class="select-group">
+        <label for="year">سالا ژ دایکبوونێ:</label>
+        <select id="year"></select>
+    </div>
+
+    <div class="select-group">
+        <label for="month">هەیفا ژ دایکبوونێ:</label>
+        <select id="month">
+            <option value="1">کانوونا دووێ (1)</option>
+            <option value="2">شوباتب (2)</option>
+            <option value="3">آذار (3)</option>
+            <option value="4">نیسان (4)</option>
+            <option value="5">گولان (5)</option>
+            <option value="6">حەزەیران (6)</option>
+            <option value="7">تیرمەهـ (7)</option>
+            <option value="8">تەباخ (8)</option>
+            <option value="9">ایلول (9)</option>
+            <option value="10">تشرینا اول (10)</option>
+            <option value="11">تشرینا دووێ (11)</option>
+            <option value="12">کانوونا اول (12)</option>
+        </select>
+    </div>
+
+    <div class="select-group">
+        <label for="day">روژا ژ دایکبوونێ:</label>
+        <select id="day"></select>
+    </div>
+
+    <button onclick="calculateAge()">عەمری دیار بکە</button>
+</div>
+
 <script>
     // تژی کرنا سالان ژ سالا 1920 هەتا سالا نها
     const yearSelect = document.getElementById('year');
@@ -18,10 +118,10 @@
         daySelect.appendChild(option);
     }
 
-    // فەنکشن بۆ ژمارکرنا عەمری و زێدەبوونا وێ
+    // فەنکشن بۆ ژمارکرنا عەمری دەما دوگۆم هێتە کلیک کرن
     function calculateAge() {
         const birthYear = parseInt(document.getElementById('year').value);
-        const birthMonth = parseInt(document.getElementById('month').value) - 1;
+        const birthMonth = parseInt(document.getElementById('month').value) - 1; // مانگ ل ڤێرێ ژ 0 دەست پێدکەن
         const birthDay = parseInt(document.getElementById('day').value);
 
         const today = new Date();
@@ -33,33 +133,24 @@
         let ageMonths = currentMonth - birthMonth;
         let ageDays = currentDay - birthDay;
 
+        // ئەگەر روژێن نها کێمتر بن ژ روژێن ژ دایکبوونێ
         if (ageDays < 0) {
             ageMonths--;
+            // ژمارا روژێن هەیفا بوری وەردگرین
             const lastMonthDate = new Date(currentYear, currentMonth, 0);
             ageDays += lastMonthDate.getDate();
         }
 
+        // ئەگەر هەیفێن نها کێمتر بن ژ هەیفێن ژ دایکبوونێ
         if (ageMonths < 0) {
             ageYears--;
             ageMonths += 12;
         }
 
-        // حیسابکرنا چەند روژ و مەهـ ماینە هەتا سالا تە یا ل دووڤ دا تەواو ببیت
-        // بۆ نموونە هەتا تەمەنێ تە دبە سالا ل دووڤ دا (ageYears + 1)
-        let nextBirthdayYear = birthYear + ageYears + 1;
-        let nextBirthday = new Date(nextBirthdayYear, birthMonth, birthDay);
-        
-        let diffTime = nextBirthday - today;
-        let diffDaysTotal = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        let remainingMonths = Math.floor(diffDaysTotal / 30);
-        let remainingDays = diffDaysTotal % 30;
-
-        // نیشاندانا ئەنجامی ب زێدەبوونا مەیێن پاشەڕۆژێ ڤە
-        let message = "تەمەنێ تە یێ نها:\n" + ageYears + " سال، " + ageMonths + " هەیف، " + ageDays + " روژ\n\n" +
-                      "دێ چەند بۆ تە زێدە بیت بۆ سالا ل دووڤ دا؟\n" +
-                      "مایە: " + remainingMonths + " هەیف و " + remainingDays + " روژ هەتا تەمەنێ تە پتر لێ بێت!";
-
-        alert(message);
+        // نیشاندانا ئەنجامی د شاشەکێ دا (Alert)
+        alert("تەمەنێ تە:\n" + ageYears + " سال \n" + ageMonths + " هەیف \n" + ageDays + " روژ");
     }
 </script>
+
+</body>
+</html>
