@@ -65,7 +65,7 @@
 <body>
 
 <div class="container">
-    <h2>تەمەنێ خۆ دياربكه</h2>
+    <h2>تەمەنێ خۆ دِیارْبکە</h2>
     
     <div class="select-group">
         <label for="year">سالا ژ دایکبوونێ:</label>
@@ -76,7 +76,7 @@
         <label for="month">هەیفا ژ دایکبوونێ:</label>
         <select id="month">
             <option value="1">کانوونا دووێ (1)</option>
-            <option value="2">شوباتب (2)</option>
+            <option value="2">شوبات (2)</option>
             <option value="3">آذار (3)</option>
             <option value="4">نیسان (4)</option>
             <option value="5">گولان (5)</option>
@@ -91,7 +91,7 @@
     </div>
 
     <div class="select-group">
-        <label for="day">روژا ژ دایکبوونێ:</label>
+        <label for="day">رۆژا ژ دایکبوونێ:</label>
         <select id="day"></select>
     </div>
 
@@ -118,10 +118,10 @@
         daySelect.appendChild(option);
     }
 
-    // فەنکشن بۆ ژمارکرنا عەمری دەما دوگۆم هێتە کلیک کرن
+    // فەنکشن بۆ ژمارکرنا عەمری و دیارکرنا دەمێ بۆ سالا ل دووڤ دا
     function calculateAge() {
         const birthYear = parseInt(document.getElementById('year').value);
-        const birthMonth = parseInt(document.getElementById('month').value) - 1; // مانگ ل ڤێرێ ژ 0 دەست پێدکەن
+        const birthMonth = parseInt(document.getElementById('month').value) - 1;
         const birthDay = parseInt(document.getElementById('day').value);
 
         const today = new Date();
@@ -133,22 +133,36 @@
         let ageMonths = currentMonth - birthMonth;
         let ageDays = currentDay - birthDay;
 
-        // ئەگەر روژێن نها کێمتر بن ژ روژێن ژ دایکبوونێ
         if (ageDays < 0) {
             ageMonths--;
-            // ژمارا روژێن هەیفا بوری وەردگرین
             const lastMonthDate = new Date(currentYear, currentMonth, 0);
             ageDays += lastMonthDate.getDate();
         }
 
-        // ئەگەر هەیفێن نها کێمتر بن ژ هەیفێن ژ دایکبوونێ
         if (ageMonths < 0) {
             ageYears--;
             ageMonths += 12;
         }
 
-        // نیشاندانا ئەنجامی د شاشەکێ دا (Alert)
-        alert("تەمەنێ تە:\n" + ageYears + " سال \n" + ageMonths + " هەیف \n" + ageDays + " روژ");
+        let nextAge = ageYears + 1;
+
+        // ژمارکرنا چەند مەهـ و روژ ماینە هەتا جەژنا ژ دایکبوونا بهێن
+        let nextBirthday = new Date(currentYear, birthMonth, birthDay);
+        if (today > nextBirthday) {
+            nextBirthday.setFullYear(currentYear + 1);
+        }
+
+        let diffTime = nextBirthday - today;
+        let diffDaysTotal = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        let remainingMonths = Math.floor(diffDaysTotal / 30);
+        let remainingDays = diffDaysTotal % 30;
+
+        // پەیاما داخوازی ل سەر شاشێ (Alert)
+        let message = "عەمری تە " + ageYears + " سالە، دێ کەنگی بیە " + nextAge + " سال؟\n\n" +
+                      "مایە: " + remainingMonths + " هەيف و " + remainingDays + " رۆژ هەتا تو دبەیە " + nextAge + " سال!";
+
+        alert(message);
     }
 </script>
 
