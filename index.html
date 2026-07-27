@@ -3,161 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Age & Time Calculator</title>
+    <title>Age & Time</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
         body {
-            background: #0f172a;
-            color: #fff;
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            height: 100vh;
+            margin: 0;
         }
-        .card {
-            background: #1e293b;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            max-width: 450px;
-            width: 100%;
+        .box {
+            background-color: #1e1e1e;
+            padding: 25px;
+            border-radius: 10px;
             text-align: center;
-            border: 1px solid #334155;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            width: 320px;
         }
-        h1 {
-            color: #38bdf8;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-        .clock-box {
-            background: #0f172a;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 22px;
+        h2 { color: #e50914; margin-bottom: 15px; }
+        .clock {
+            font-size: 20px;
             font-weight: bold;
-            color: #facc15;
-            margin-bottom: 25px;
-            border: 1px solid #1e293b;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #94a3b8;
-            text-align: right;
-        }
-        input[type="date"] {
-            width: 100%;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #475569;
-            background: #0f172a;
-            color: #fff;
-            font-size: 16px;
             margin-bottom: 20px;
-            outline: none;
+            color: #f39c12;
+        }
+        input {
+            padding: 10px;
+            width: 90%;
+            border-radius: 5px;
+            border: none;
+            margin-bottom: 15px;
         }
         button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            background: #0284c7;
+            background-color: #e50914;
             color: white;
-            font-size: 16px;
-            font-weight: bold;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: 0.2s;
-        }
-        button:hover {
-            background: #0369a1;
+            font-weight: bold;
+            width: 100%;
         }
         .result {
-            margin-top: 20px;
-            padding: 15px;
-            background: #0f172a;
-            border-radius: 8px;
+            margin-top: 15px;
             font-size: 16px;
-            color: #38bdf8;
-            line-height: 1.6;
+            color: #2ecc71;
         }
-        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h1>Age & Time Calculator</h1>
+    <div class="box">
+        <h2>Age & Time</h2>
+        <div class="clock" id="clock">00:00:00</div>
 
-        <!-- Real-time Clock -->
-        <div class="clock-box" id="live-clock">
-            00:00:00 PM
-        </div>
+        <input type="date" id="birthdate">
+        <button onclick="calculate()">تەمەنێ من بژمێرە</button>
 
-        <div>
-            <label for="birthdate">بەروارێ ژدایکبوونێ هەلبژێره:</label>
-            <input type="date" id="birthdate">
-            <button onclick="calculateAge()">ژمارپێکرنا تەمەنی</button>
-        </div>
-
-        <div id="result" class="result hidden"></div>
+        <div class="result" id="result"></div>
     </div>
 
     <script>
-        // Live Clock Function
-        function updateClock() {
+        // Live Time
+        function updateTime() {
             const now = new Date();
-            let hours = now.getHours();
-            let minutes = now.getMinutes();
-            let seconds = now.getSeconds();
-            let ampm = hours >= 12 ? 'PM' : 'AM';
-
-            hours = hours % 12;
-            hours = hours ? hours : 12; // 0 should be 12
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            seconds = seconds < 10 ? '0' + seconds : seconds;
-
-            const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
-            document.getElementById('live-clock').innerText = timeString;
+            document.getElementById('clock').innerText = now.toLocaleTimeString();
         }
-        setInterval(updateClock, 1000);
-        updateClock();
+        setInterval(updateTime, 1000);
+        updateTime();
 
-        // Age Calculation Function
-        function calculateAge() {
-            const birthInput = document.getElementById('birthdate').value;
-            if (!birthInput) {
-                alert("تکایە بەروارەکێ هەلبژێره!");
-                return;
-            }
+        // Age Calculation
+        function calculate() {
+            const val = document.getElementById('birthdate').value;
+            if(!val) return;
 
-            const birthDate = new Date(birthInput);
+            const birth = new Date(val);
             const today = new Date();
+            let age = today.getFullYear() - birth.getFullYear();
+            const m = today.getMonth() - birth.getMonth();
 
-            let years = today.getFullYear() - birthDate.getFullYear();
-            let months = today.getMonth() - birthDate.getMonth();
-            let days = today.getDate() - birthDate.getDate();
-
-            if (days < 0) {
-                months--;
-                const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-                days += lastMonth.getDate();
+            if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+                age--;
             }
 
-            if (months < 0) {
-                years--;
-                months += 12;
-            }
-
-            const resultDiv = document.getElementById('result');
-            resultDiv.classList.remove('hidden');
-            resultDiv.innerHTML = `تەمەنێ تە ب دروستی:<br><b>${years}</b> سال و <b>${months}</b> هەیڤ و <b>${days}</b> ڕۆژە.`;
+            document.getElementById('result').innerText = "تەمەنێ تە: " + age + " ساڵن";
         }
     </script>
 </body>
